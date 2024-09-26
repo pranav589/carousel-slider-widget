@@ -72,18 +72,26 @@ function Widget({
     }
   }, [projectId]);
 
-  const compareDomains = (projectUrl, currentUrl) => {
+  const compareDomains = (projectUrl) => {
     try {
+      // Get the parent domain (the domain where the iframe is embedded)
+      const currentUrl = window.top.location.href;
+
+      // Parse both URLs
       const projectUrlObj = new URL(projectUrl);
       const currentUrlObj = new URL(currentUrl);
+
+      // Compare origins (domain + protocol)
       if (projectUrlObj.origin === currentUrlObj.origin) {
-        setIsSameDomain(true);
+        setIsSameDomain(true); // Domains match
+        console.log("Domains match");
       } else {
+        setIsSameDomain(false); // Domains do not match
         console.error("Domains did not match");
       }
     } catch (error) {
       console.error("Error comparing domains:", error);
-      setIsSameDomain(false);
+      setIsSameDomain(false); // Error occurred, assume domains do not match
     }
   };
 
