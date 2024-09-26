@@ -15,8 +15,8 @@ import tailwindStyles from "../index.css?inline";
 
 Widget.propTypes = {
   projectId: PropTypes.number,
-  loop: PropTypes.bool,
-  autoplay: PropTypes.bool,
+  loop: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  autoplay: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   delay: PropTypes.number,
 };
 
@@ -29,6 +29,11 @@ function Widget({
   const [plugins, setPlugins] = useState([]);
   const [feedbacks, setFeedbacks] = useState([]);
   const [isSameDomain, setIsSameDomain] = useState(false);
+
+  // Convert string values to boolean explicitly
+  const isAutoplay = autoplay === "true" || autoplay === true;
+  const isLoop = loop === "true" || loop === true;
+
   useEffect(() => {
     const fetchFeedbacks = async () => {
       const { data, error } = await supabase
@@ -73,32 +78,24 @@ function Widget({
   }, [projectId]);
 
   const compareDomains = (projectUrl) => {
-    console.log({ projectUrl });
     try {
-      // Get the parent domain (the domain where the iframe is embedded)
       const currentUrl = window.top.location.href;
-
-      // Parse both URLs
       const projectUrlObj = new URL(projectUrl);
       const currentUrlObj = new URL(currentUrl);
-      console.log({ projectUrlObj, currentUrlObj, currentUrl });
-
-      // Compare origins (domain + protocol)
       if (projectUrlObj.origin === currentUrlObj.origin) {
-        setIsSameDomain(true); // Domains match
-        console.log("Domains match");
+        setIsSameDomain(true);
       } else {
-        setIsSameDomain(false); // Domains do not match
+        setIsSameDomain(false);
         console.error("Domains did not match");
       }
     } catch (error) {
       console.error("Error comparing domains:", error);
-      setIsSameDomain(false); // Error occurred, assume domains do not match
+      setIsSameDomain(false);
     }
   };
 
   useEffect(() => {
-    if (autoplay) {
+    if (isAutoplay) {
       setPlugins([
         ...plugins,
         Autoplay({
@@ -108,7 +105,7 @@ function Widget({
     } else {
       setPlugins([...plugins]);
     }
-  }, [autoplay, delay]);
+  }, [isAutoplay, delay]);
 
   if (!isSameDomain) {
     return null;
@@ -120,7 +117,7 @@ function Widget({
       <Carousel
         opts={{
           align: "start",
-          loop: loop,
+          loop: isLoop,
         }}
         plugins={plugins}
         className="widget w-full max-w-xs sm:max-w-sm md:max-w-2xl lg:max-w-3xl xl:max-w-5xl mx-auto"
