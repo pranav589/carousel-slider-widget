@@ -73,6 +73,7 @@ function Widget({
   }, [projectId]);
 
   const compareDomains = (projectUrl) => {
+    console.log({ projectUrl });
     try {
       // Get the parent domain (the domain where the iframe is embedded)
       const currentUrl = window.top.location.href;
@@ -80,6 +81,7 @@ function Widget({
       // Parse both URLs
       const projectUrlObj = new URL(projectUrl);
       const currentUrlObj = new URL(currentUrl);
+      console.log({ projectUrlObj, currentUrlObj, currentUrl });
 
       // Compare origins (domain + protocol)
       if (projectUrlObj.origin === currentUrlObj.origin) {
