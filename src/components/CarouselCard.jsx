@@ -13,7 +13,7 @@ CarouselCard.propTypes = {
 
 function CarouselCard({ item }) {
   return (
-    <Card className="max-w-full">
+    <Card className="max-w-full h-full">
       <CardContent className="flex p-6 ">
         <div className="flex flex-col">
           <div className="flex items-center">
@@ -30,10 +30,10 @@ function CarouselCard({ item }) {
               {[...Array(5)].map((_, index) => (
                 <StarIcon
                   key={index}
-                  className={`h-5 w-5 cursor-pointer ${
+                  className={`h-6 w-6 cursor-pointer ${
                     item?.rating > index
-                      ? "fill-primary"
-                      : "fill-muted stroke-muted-foreground"
+                      ? "fill-yellow-400 stroke-none"
+                      : "fill-muted stroke-muted"
                   } `}
                 />
               ))}
