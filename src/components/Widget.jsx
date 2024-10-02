@@ -39,7 +39,8 @@ function Widget({
       const { data, error } = await supabase
         .from("Feedback")
         .select("*")
-        .eq("projectId", projectId);
+        .eq("projectId", projectId)
+        .eq("isFavorite", true);
       if (error) {
         console.error("Error fetching feedbacks", error);
       } else {
