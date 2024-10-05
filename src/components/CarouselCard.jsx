@@ -1,6 +1,34 @@
 import { Card, CardContent } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import PropTypes from "prop-types";
+import {
+  InstagramEmbed,
+  LinkedInEmbed,
+  XEmbed,
+} from "react-social-media-embed";
+
+const cardType = (socialPlatform, socialUrl) => {
+  const defaultClassName =
+    "w-full max-h-full overflow-hidden border-slate-100 border-solid border-2 mb-3";
+  const result = {
+    TWITTER: <XEmbed url={socialUrl} className={defaultClassName} />,
+    LINKEDIN: (
+      <div className="flex justify-center">
+        <LinkedInEmbed url={socialUrl} className={defaultClassName} />
+      </div>
+    ),
+    INSTAGRAM: (
+      <div className="flex justify-center relative">
+        <InstagramEmbed
+          url={socialUrl}
+          className={`${defaultClassName} border-none`}
+        />
+        <div className="absolute top-3 right-3 bg-white w-[110px] h-[30px]"></div>
+      </div>
+    ),
+  };
+  return result[socialPlatform];
+};
 
 CarouselCard.propTypes = {
   item: PropTypes.shape({
@@ -8,12 +36,18 @@ CarouselCard.propTypes = {
     message: PropTypes.string,
     rating: PropTypes.number,
     date: PropTypes.string,
+    type: PropTypes.string,
+    socialPlatform: PropTypes.string,
+    socialUrl: PropTypes.socialUrl,
   }),
 };
 
 function CarouselCard({ item }) {
+  if (item?.type === "SOCIAL") {
+    return cardType(item?.socialPlatform, item?.socialUrl);
+  }
   return (
-    <Card className="max-w-full h-full">
+    <Card className="max-w-full min-h-[310px]">
       <CardContent className="flex p-6 ">
         <div className="flex flex-col">
           <div className="flex items-center">
